@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Volunteer {
+  ID                  Int     @id @default(autoincrement())
+  emailAddress        String? @db.Text
+  fullName            String? @db.Text
+  orgEmail            String? @db.Text
+  ranks               String? @db.Text
+  department_division String? @db.Text
+  departments         String? @db.Text
+  activityStatus      String? @db.Text
+  contract            String? @db.Text
+  breakDuration       String? @db.Text
+  strikes             Int?
+  discordTag          String? @db.Text
+  roleID              Int?
+
+  @@index([roleID], map: "roleID")
+}
