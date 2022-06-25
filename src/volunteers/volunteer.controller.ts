@@ -44,16 +44,17 @@ export class VolunteerController {
       throw new BadRequestException(err);
     }
   }
-  @Put('/:id')
+  
+  @Put(':id')
   async updateUser(
     @Param('id') id,
-    data: Prisma.VolunteerUpdateInput,
+    @Body() data: Prisma.VolunteerUpdateInput,
   ): Promise<Volunteer> {
     id = parseInt(id);
     try {
       return await this.volunteerService.editUser(id, data);
     } catch (err) {
-      throw new NotFoundException(err);
+      throw new BadRequestException(err);
     }
   }
 
