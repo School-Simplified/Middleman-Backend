@@ -6,7 +6,7 @@ import { PrismaService } from '../prisma.service';
 export class VolunteerService {
   constructor(private prisma: PrismaService) {}
   async getUsers() {
-    return await this.prisma.volunteer.findMany();
+    return await this.prisma.volunteer.findMany({orderBy: [{fullName: 'asc'}]});
   }
 
   async createUser(user: Prisma.VolunteerCreateInput) {

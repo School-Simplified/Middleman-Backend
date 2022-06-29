@@ -8,6 +8,9 @@ export class GoogleService {
     'https://www.googleapis.com/auth/script.deployments',
     'https://www.googleapis.com/auth/script.external_request',
     'https://www.googleapis.com/auth/admin.directory.user',
+    'https://www.googleapis.com/auth/drive.metadata.readonly',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
   ];
   constructor() {
     const { client_secret, client_id, redirect_uris } = credentials.installed;
