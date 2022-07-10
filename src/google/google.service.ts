@@ -11,6 +11,8 @@ export class GoogleService {
     'https://www.googleapis.com/auth/drive.metadata.readonly',
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/documents',
   ];
   constructor() {
     const { client_secret, client_id, redirect_uris } = credentials.installed;
