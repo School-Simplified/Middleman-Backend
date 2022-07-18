@@ -15,7 +15,7 @@ export class GoogleController {
     const tokens = await this.google.exchangeCodeForToken(code);
     console.log(tokens);
     return response.redirect(
-      `http://localhost:3000/home?token=${tokens.access_token}?refresh=${tokens.refresh_token}`,
+      `${process.env.APP_URL}/home?token=${tokens.access_token}?refresh=${tokens.refresh_token}`,
     );
   }
 }
