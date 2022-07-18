@@ -8,10 +8,9 @@ import {
   Post,
   Put,
   Body,
+  ImATeapotException,
 } from '@nestjs/common';
 import { Prisma, Volunteer } from '@prisma/client';
-import { NotFoundError } from 'rxjs';
-import { PrismaService } from 'src/prisma.service';
 import { VolunteerService } from './volunteer.service';
 @Controller('api/volunteers/')
 export class VolunteerController {
@@ -22,8 +21,8 @@ export class VolunteerController {
   }
 
   @Get('help')
-  async help(): Promise<string> {
-    return 'help page';
+  async help(): Promise<any> {
+    throw new ImATeapotException('help page');
   }
   @Post()
   async createUser(

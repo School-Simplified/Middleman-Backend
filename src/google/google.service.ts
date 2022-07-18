@@ -15,7 +15,9 @@ export class GoogleService {
     'https://www.googleapis.com/auth/documents',
   ];
   constructor() {
-    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const { redirect_uris } = credentials.installed;
+    const client_id = process.env.GOOGLE_CLIENT_ID;
+    const client_secret = process.env.GOOGLE_SECRET;
     this.client = new google.auth.OAuth2(
       client_id,
       client_secret,
