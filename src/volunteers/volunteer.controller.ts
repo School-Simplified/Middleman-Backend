@@ -16,12 +16,15 @@ import { VolunteerService } from './volunteer.service';
 @Controller('api/volunteers/')
 export class VolunteerController {
   constructor(private volunteerService: VolunteerService) {}
-
   @Get()
   async getUsers(): Promise<Volunteer[]> {
     return await this.volunteerService.getUsers();
   }
 
+  @Get('help')
+  async help(): Promise<string> {
+    return 'help page';
+  }
   @Post()
   async createUser(
     @Body() data: Prisma.VolunteerCreateInput,
@@ -44,7 +47,7 @@ export class VolunteerController {
       throw new BadRequestException(err);
     }
   }
-  
+
   @Put(':id')
   async updateUser(
     @Param('id') id,
