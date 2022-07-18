@@ -19,7 +19,7 @@ export class GoogleService {
     this.client = new google.auth.OAuth2(
       client_id,
       client_secret,
-      redirect_uris[0],
+      redirect_uris[1],
     );
   }
 
