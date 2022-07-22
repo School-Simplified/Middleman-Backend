@@ -20,10 +20,6 @@ export class VolunteerController {
     return await this.volunteerService.getUsers();
   }
 
-  @Get('help')
-  async help(): Promise<any> {
-    throw new ImATeapotException('help page');
-  }
   @Post()
   async createUser(
     @Body() data: Prisma.VolunteerCreateInput,
