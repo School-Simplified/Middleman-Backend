@@ -9,14 +9,19 @@ import {
   Put,
   Body,
   ImATeapotException,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { Prisma, Volunteer } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { VolunteerService } from './volunteer.service';
 @Controller('api/volunteers/')
+@UseGuards(JwtAuthGuard)
 export class VolunteerController {
   constructor(private volunteerService: VolunteerService) {}
   @Get()
-  async getUsers(): Promise<Volunteer[]> {
+  async getUsers(@Req() req): Promise<Volunteer[]> {
+    console.log(req.user.oAuthToken);
     return await this.volunteerService.getUsers();
   }
 
