@@ -7,5 +7,6 @@ import { VolunteerController } from './volunteer.controller';
   providers: [VolunteerService, PrismaService],
   controllers: [VolunteerController],
   imports: [],
+  exports: [VolunteerService],
 })
 export class VolunteerModule {}

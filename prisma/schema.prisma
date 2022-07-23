@@ -12,7 +12,7 @@ model Volunteer {
   ID                  Int     @id @default(autoincrement())
   emailAddress        String? @db.Text
   fullName            String? @db.Text
-  orgEmail            String? @db.Text
+  orgEmail            String? @unique
   ranks               String? @db.Text
   department_division String? @db.Text
   departments         String? @db.Text
@@ -22,6 +22,9 @@ model Volunteer {
   strikes             Int?
   discordTag          String? @db.Text
   roleID              Int?
+  googleOauthToken    String? @db.Text
+  googleRefreshToken  String? @db.Text
+
 
   @@index([roleID], map: "roleID")
 }
