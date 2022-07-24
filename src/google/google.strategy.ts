@@ -26,7 +26,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    console.log('rEfresh token: ' + refreshToken);
     this.volunteerService.setGoogleTokens(
       profile.emails[0].value,
       accessToken,

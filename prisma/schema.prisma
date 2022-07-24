@@ -2,7 +2,19 @@ generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
-
+generator nestjsDto {
+  provider                        = "prisma-generator-nestjs-dto"
+  output                          = "../src/dto/"
+  outputToNestJsResourceStructure = "false"
+  exportRelationModifierClasses   = "true"
+  reExport                        = "false"
+  createDtoPrefix                 = "Create"
+  updateDtoPrefix                 = "Update"
+  dtoSuffix                       = "Dto"
+  entityPrefix                    = ""
+  entitySuffix                    = ""
+  fileNamingStyle                 = "camel"
+}
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")

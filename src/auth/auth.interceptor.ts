@@ -20,7 +20,6 @@ export class AuthInteceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Promise<Observable<any>> {
-    console.log('In interceptor');
     const user = await this.volunteerService.getUserByEmail(
       context.switchToHttp().getRequest().user.email,
     );

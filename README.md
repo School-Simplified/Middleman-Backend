@@ -89,19 +89,17 @@ Updates a user based on the given ID.
 
 ### `DELETE /api/volunteers/:id`
 
-- Returns: `User`
-
 Do I really need to explain this?
 
 ### `GET /auth/hello`
 
 - Returns:
 
-```json
+```js
 {
-    name: string,
-    email: string
-    picture: string,
+    "name": string,
+    "email": string,
+    "picture": string,
 }
 ```
 

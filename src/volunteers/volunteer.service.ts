@@ -1,10 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, Req } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
-import axios from 'axios';
+import { HttpService } from '@nestjs/axios';
+import { Request } from 'express';
 @Injectable()
 export class VolunteerService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private http: HttpService) {}
+  private readonly logger = new Logger(VolunteerService.name);
   async getUsers() {
     return await this.prisma.volunteer.findMany({
       orderBy: [{ fullName: 'asc' }],
@@ -29,12 +31,32 @@ export class VolunteerService {
   }
 
   async createGsuiteAccount(data, token) {
-    const resp = await axios.post(
+    const resp = await this.http.axiosRef.post(
       `https://script.googleapis.com/v1/scripts/${process.env.GOOGLE_APP_SCRIPT_ID}:run`,
       {
         function: 'createUser',
         devMode: true,
         parameters: [data],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log(resp.data);
+    if (resp.data.error) {
+      throw new BadRequestException(resp.data);
+    }
+    return resp.data;
+  }
+  async deleteGsuiteAccount(email: string, token: string) {
+    const resp = await this.http.axiosRef.post(
+      `https://script.googleapis.com/v1/scripts/${process.env.GOOGLE_APP_SCRIPT_ID}:run`,
+      {
+        function: 'createUser',
+        devMode: true,
+        parameters: [email],
       },
       {
         headers: {
@@ -57,10 +79,12 @@ export class VolunteerService {
     });
   }
 
-  async deleteUser(id: number) {
-    return await this.prisma.volunteer.delete({
+  async deleteUser(id: number, token: string) {
+    const deletedUser = await this.prisma.volunteer.delete({
       where: { ID: id },
     });
+    const resp = await this.deleteGsuiteAccount(deletedUser.orgEmail, token);
+    return [deletedUser, resp];
   }
 
   async createManyUsers(data: Prisma.VolunteerCreateManyInput) {
