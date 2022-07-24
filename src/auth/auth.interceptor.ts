@@ -11,7 +11,8 @@ import { VolunteerService } from '../volunteers/volunteer.service';
     This interceptor gives access to the respective user's google tokens in the context of
     the controller and service, after the guard has allowed the request and populated `req.user`.
     Because JWT's are encoded, not encrypted, anyone can decode the body of the JWT and find its data.
-    Storing the google token in the database keeps their credentials safe.
+    Storing the google token in the database keeps their credentials safe. When the time comes to refresh a user token,
+    we should do that automatically here
 */
 @Injectable()
 export class AuthInteceptor implements NestInterceptor {
