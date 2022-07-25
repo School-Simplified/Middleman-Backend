@@ -15,9 +15,7 @@ export class GoogleController {
   constructor(private authService: AuthService) {}
   @Get()
   @UseGuards(AuthGuard('google'))
-  async authorize(@Req() req) {
-    console.log(req.user);
-  }
+  async authorize(@Req() req) {}
 
   @Get('redirect')
   @UseGuards(AuthGuard('google'))

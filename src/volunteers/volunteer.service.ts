@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, Logger, Req } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  Req,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import { HttpService } from '@nestjs/axios';
@@ -22,10 +28,10 @@ export class VolunteerService {
       changePasswordAtNextLogin: true,
     };
     const r = await Promise.all([
-      await this.prisma.volunteer.create({
+      this.prisma.volunteer.create({
         data: user,
       }),
-      await this.createGsuiteAccount(googleData, token),
+      this.createGsuiteAccount(googleData, token),
     ]);
     return r;
   }
@@ -44,7 +50,6 @@ export class VolunteerService {
         },
       },
     );
-    console.log(resp.data);
     if (resp.data.error) {
       throw new BadRequestException(resp.data);
     }
@@ -64,10 +69,26 @@ export class VolunteerService {
         },
       },
     );
-    console.log(resp.data);
     if (resp.data.error) {
       throw new BadRequestException(resp.data);
     }
+    return resp.data;
+  }
+
+  async getGsuiteAccounts(token: string) {
+    const resp = await this.http.axiosRef.post(
+      `https://script.googleapis.com/v1/scripts/${process.env.GOOGLE_APP_SCRIPT_ID}:run`,
+      {
+        function: 'listAllUsers',
+        devMode: true,
+        parameters: [],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
     return resp.data;
   }
   async editUser(id: number, data: Prisma.VolunteerUpdateInput) {
@@ -100,8 +121,7 @@ export class VolunteerService {
       where: { orgEmail: email },
     });
   }
-  async setGoogleTokens(email: string, token: string, refresh: string) {
-    console.log(`Refresh token: ${refresh}`);
+  async setGoogleTokens(email: string, token: string, refresh?: string) {
     return await this.prisma.volunteer.update({
       where: {
         orgEmail: email,

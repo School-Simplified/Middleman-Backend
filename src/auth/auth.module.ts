@@ -5,11 +5,13 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { VolunteerModule } from 'src/volunteers/volunteer.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     PassportModule,
     VolunteerModule,
+    HttpModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {

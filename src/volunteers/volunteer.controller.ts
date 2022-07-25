@@ -31,8 +31,12 @@ export class VolunteerController {
   constructor(private volunteerService: VolunteerService) {}
 
   @Get()
-  async getUsers(@Req() req): Promise<Volunteer[]> {
-    return await this.volunteerService.getUsers();
+  async getUsers(@Req() req): Promise<any> {
+    const users = await this.volunteerService.getUsers();
+    const googleUsers = await this.volunteerService.getGsuiteAccounts(
+      req.user.token,
+    );
+    return { users, googleUsers };
   }
   @Post()
   async createUser(@Body() data: CreateVolunteerDto, @Req() req): Promise<any> {
