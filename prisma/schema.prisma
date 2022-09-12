@@ -20,23 +20,161 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Volunteer {
-  ID                  Int     @id @default(autoincrement())
-  emailAddress        String? @db.Text
-  fullName            String? @db.Text
-  orgEmail            String? @unique
-  ranks               String? @db.Text
-  department_division String? @db.Text
-  departments         String? @db.Text
-  activityStatus      String? @db.Text
-  contract            String? @db.Text
-  breakDuration       String? @db.Text
-  strikes             Int?
-  discordTag          String? @db.Text
-  roleID              Int?
-  googleOauthToken    String? @db.Text
-  googleRefreshToken  String? @db.Text
+model StaffFile {
+  id            String @id @default(cuid())
+  name          String
+  personalEmail String
+  companyEmail  String
+  photoLink     String
+  phone         String
+  legalSex      String
+  gender        String
+  ethnicity     String
+  appStatus     String
+  activtyStatus String
+  alumni        Boolean
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime?
 
+  // relations
 
-  @@index([roleID], map: "roleID")
+  team          Team?  @relation(references: [id], fields: [teamId])
+  teamId        String? @unique
+ 
+  positions     Position[] 
+
+  supervisor    Supervisor @relation(references: [id], fields: [supervisorId])
+  supervisorId  String @unique
+
+  department    Department? @relation(references: [id], fields: [departmentId])
+  departmentId  String?
+
+  permissions   Permission? @relation(references: [id], fields: [permissionId])
+  permissionId  String? @unique
+
+  discordInfo   DiscordInfo? @relation(references: [id], fields: [discordInfoId])
+  discordInfoId String @unique
+
+  censures      Censure[]
+  strikes       Strike[]
+  pips          Pip[]
+}
+
+model Position {
+  id            String @id @default(cuid())
+  title         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime? 
+  joined        DateTime
+  quit          DateTime? // safe to assume that once a quit date is defined then the position is no longer active
+  staff         StaffFile @relation(references: [id], fields: [staffId])
+  staffId       String
+  department    Department @relation(references: [id], fields: [departmentId])
+  departmentId  String
+}
+model Team {
+  id            String @id @default(cuid())
+  name          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime?
+  members       StaffFile[]
+
+  department    Department @relation(references: [id], fields: [departmentId])
+  departmentId  String
+
+  supervisor    Supervisor?
+  supervisorId  String? @unique
+}
+model Supervisor {
+  id            String  @id @default(cuid())
+  team          Team @relation(references: [id], fields: [teamId])
+  teamId        String @unique
+  title         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime?
+  staffCensured Censure[]
+  staffStriked  Strike[]
+  pipsGiven     Pip[]
+
+  department    Department?
+  staffFile     StaffFile?
+}
+
+model Department {
+  id            String  @id @default(cuid())
+  name          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime?
+  teams         Team[]
+  staff         StaffFile[]
+  positions     Position[]
+  supervisor    Supervisor @relation(references: [id], fields: [supervisorId])
+  supervisorId  String @unique
+}
+
+model Permission {
+  id            String  @id @default(cuid())
+  hireOrFire    Boolean
+  promoteStaff  Boolean
+  updateStaff   Boolean
+
+  user          StaffFile?
+}
+
+model DiscordInfo {
+  id            String  @id @default(cuid())
+  username      String
+  discordId     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime?
+
+  staffFile     StaffFile?
+}
+
+model Ticket {
+  id            String  @id @default(cuid())
+  author        String
+  category      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime?
+  messages      String
+}
+
+model Censure {
+  id            String  @id @default(cuid())
+  details       String
+  dateGiven     DateTime
+  censuredBy    Supervisor @relation(references: [id], fields: [censuredById])
+  censuredById  String
+  evidence      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime?
+  user          StaffFile @relation(references: [id], fields: [userId])
+  userId        String
+}
+
+model Strike {
+  id            String  @id @default(cuid())
+  details       String
+  dateGiven     DateTime
+  strikedBy     Supervisor @relation(references: [id], fields: [strikedById])
+  strikedById   String
+  evidence      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime?
+  user          StaffFile @relation(references: [id], fields: [userId])
+  userId        String
+}
+
+model Pip {
+  id            String  @id @default(cuid())
+  details       String
+  dateGiven     DateTime
+  givenBy       Supervisor @relation(references: [id], fields: [givenById])
+  givenById     String
+  evidence      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime?
+  user          StaffFile @relation(references: [id], fields: [userId])
+  userId        String
 }
